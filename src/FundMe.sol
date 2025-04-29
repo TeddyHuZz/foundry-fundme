@@ -16,6 +16,7 @@ contract FundMe{
     mapping (address => uint256) public addressToAmountFunded;
 
     address public immutable i_owner;
+    AggregatorV3Interface private s_priceFeed; 
 
     constructor(){
         i_owner = msg.sender;
@@ -43,6 +44,12 @@ contract FundMe{
 
         (bool success, ) = payable(msg.sender).call{value: address(this).balance}("");
         require(success, "Call failed");
+    }
+
+    // Getters
+    function getVersion() public view returns (uint256) {
+        AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeed);
+        return s_priceFeed.version();
     }
 
     receive() external payable {
